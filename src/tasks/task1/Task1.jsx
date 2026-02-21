@@ -114,6 +114,7 @@ const Task1 = () => {
           </div>
           )}
       </div>
+      
       <div className='bg-gray-950  left-0 flex justify-center items-center border-t-2 fixed bottom-0 w-full  text-white text-center py-4 text-2xl space-x-8'>
         <button onClick={() => {
           if (count > 1) setCount(count - 1)
@@ -125,6 +126,7 @@ const Task1 = () => {
           if (count < 10) setCount(count + 1)
         }} className='cursor-pointer'>➡️</button>
       </div>
+
     </div>
   )
 }
