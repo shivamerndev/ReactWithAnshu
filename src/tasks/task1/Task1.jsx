@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 const Task1 = () => {
 
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(1)
   const [posts, setPosts] = useState([])
   const [pages, setPages] = useState([])
   const [loading, setLoading] = useState(true)
@@ -11,12 +11,12 @@ const Task1 = () => {
 
   useEffect(() => {
     getData()
-  }, [pages])
+  }, [])
 
 
   useEffect(() => {
     setPages(posts.slice(0, count * 10))
-  }, [count])
+  }, [count, posts])
 
 
   const createData = async (data) => {
@@ -30,8 +30,7 @@ const Task1 = () => {
       }
     })
     let resData = await res.json()
-    console.log(resData)
-    setPosts([...posts, resData])
+    setPosts([resData, ...posts])
   }
 
   const getData = async () => {
@@ -50,7 +49,8 @@ const Task1 = () => {
       },
     })
     let resData = await res.json()
-    console.log(resData)
+    console.log("Respose Data", resData)
+    setPages(prev => prev.map(p => p.id === resData.id ? data : p))
   }
 
   const deleteData = async (id) => {
@@ -58,7 +58,8 @@ const Task1 = () => {
       method: 'DELETE',
     });
     let data = await res.json()
-    console.log(data)
+    console.log("Response Data",data)
+    setPages(prev => prev.filter(p => p.id !== id))
   }
 
 
@@ -74,7 +75,7 @@ const Task1 = () => {
 
 
   return (
-    <div className='bg-gray-900 min-h-screen p-8 w-full text-white relative '>
+    <div className='bg-gray-900 h-screen p-8 w-full text-white relative '>
       <button onClick={() => setAdd(true)} className='bg-blue-400 mb-4 font-semibold text-white cursor-pointer px-4 rounded-2xl py-1'>Create New Post</button>
 
       {add && <form onSubmit={(e) => {
@@ -100,21 +101,30 @@ const Task1 = () => {
         <button type='submit' className={` ${!formData.id ? "bg-green-600" : "bg-amber-600"} cursor-pointer rounded-md px-4 py-1 mr-4 mt-4 `} > {formData.id ? "Update Post " : "+ Create Post"}</button>
       </form>}
 
-      <div className='grid grid-cols-4 gap-4'>
+      <div id='scrollbar' className='grid grid-cols-4 h-10/11 pb-8 overflow-auto gap-4 '>
         {
-          posts.map((p, i) => <div key={i} className=' p-2 rounded-md  font-semibold bg-black'>
+          pages.map((p, i) => <div key={i} className=' p-2 rounded-md  font-semibold bg-black'>
             <h1 className='truncate bg-zinc-900  mb-2 text-center uppercase'>{p.title}</h1>
             <p className=' overflow-hidden h-[5lh] text-center text-gray-400'>{p.body}</p>
             <button onClick={() => deleteData(p.id)} type="button" className='bg-red-500 cursor-pointer rounded-md px-4 py-1 mr-4 mt-4 ' >Delete</button>
             <button onClick={() => {
               setAdd(true)
               setFormData(p)
-              console.log(p)
             }} type='submit' className='bg-amber-600 cursor-pointer rounded-md px-4 py-1 mr-4 mt-4 ' > Update Post</button>
           </div>
           )}
       </div>
-
+      <div className='bg-gray-950  left-0 flex justify-center items-center border-t-2 fixed bottom-0 w-full  text-white text-center py-4 text-2xl space-x-8'>
+        <button onClick={() => {
+          if (count > 1) setCount(count - 1)
+        }} className='cursor-pointer'>⬅️</button>
+        <div className=' w-1/2 content-center space-x-8'>
+          {[...Array(10)].map((e, i) => <span className={` ${count === i + 1 && "bg-amber-600 rounded-full px-1.5"} cursor-pointer`} onClick={() => setCount(i + 1)}> {i + 1} </span>)}
+        </div>
+        <button onClick={() => {
+          if (count < 10) setCount(count + 1)
+        }} className='cursor-pointer'>➡️</button>
+      </div>
     </div>
   )
 }
