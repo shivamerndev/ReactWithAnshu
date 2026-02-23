@@ -8,7 +8,7 @@ const Routing = () => <Routes>
     <Route path='/' element={<VirtualDom />} />
     <Route path='/effect' element={<UseEffect />} />
     <Route path='/custom' element={<HookUse />} />
-    <Route path='/t1' element={<Task1/>} />
+    <Route path='/t1' element={<Task1 />} />
 </Routes>
 
 export default Routing
